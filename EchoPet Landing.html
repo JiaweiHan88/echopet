@@ -1,0 +1,1569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>EchoPet — Your pet's memory, still by your side.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#F5F0E6;             /* warm cream */
+    --paper:#FAF6EC;          /* paper warm */
+    --ink:#1A1815;            /* deep charcoal */
+    --ink-2:#3B3732;
+    --mute:#857F73;
+    --mute-2:#A8A294;
+    --line:#E3DBC8;
+    --line-2:#EEE6D2;
+    --amber:#C89868;          /* soft amber */
+    --amber-deep:#A87A45;
+    --amber-soft:#EBD5B4;
+    --dark:#0E0D0B;
+    --dark-2:#1A1815;
+    --dark-3:#27231E;
+    --on-dark:#F2EAD6;
+    --on-dark-mute:#867E6D;
+    --radius:14px;
+    --radius-lg:22px;
+    --radius-xl:32px;
+    --serif:"Instrument Serif", "Source Serif Pro", Cambria, Georgia, serif;
+    --sans:"Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --shadow-soft: 0 1px 1px rgba(26,24,21,.04), 0 8px 24px rgba(26,24,21,.06);
+    --shadow-card: 0 1px 0 rgba(26,24,21,.04), 0 30px 60px -25px rgba(26,24,21,.18), 0 8px 24px -8px rgba(26,24,21,.08);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-weight:400;
+    font-size:17px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--amber-soft); color:var(--ink); }
+
+  a{color:inherit; text-decoration:none}
+  img{max-width:100%; display:block}
+  button{font:inherit; color:inherit; border:0; background:none; cursor:pointer}
+
+  /* ---------- Layout ---------- */
+  .wrap{ max-width:1240px; margin:0 auto; padding:0 28px; }
+  .wrap-narrow{ max-width:980px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- Type ---------- */
+  .serif{ font-family:var(--serif); font-weight:400; letter-spacing:-0.01em; }
+  .display{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(48px, 7.4vw, 104px);
+    line-height:0.98;
+    letter-spacing:-0.025em;
+  }
+  .display .it{ font-style:italic; color:var(--ink-2); }
+  .h2{
+    font-family:var(--serif);
+    font-size:clamp(38px, 5.2vw, 72px);
+    line-height:1.02;
+    letter-spacing:-0.02em;
+    font-weight:400;
+  }
+  .h3{
+    font-family:var(--serif);
+    font-size:clamp(26px, 2.6vw, 36px);
+    line-height:1.1;
+    letter-spacing:-0.015em;
+    font-weight:400;
+  }
+  .eyebrow{
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.22em;
+    color:var(--mute);
+    font-weight:500;
+  }
+  .eyebrow .dot{ display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--amber); margin-right:10px; vertical-align:1px; }
+  .lede{ font-size:clamp(17px, 1.35vw, 20px); color:var(--ink-2); line-height:1.55; max-width:54ch; }
+  .mute{ color:var(--mute); }
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:60;
+    backdrop-filter:saturate(1.1) blur(14px);
+    -webkit-backdrop-filter:saturate(1.1) blur(14px);
+    background:color-mix(in oklab, var(--bg) 78%, transparent);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  .nav.scrolled{ border-bottom-color:var(--line); background:color-mix(in oklab, var(--bg) 92%, transparent); }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 0;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-size:22px; letter-spacing:-0.01em; }
+  .logo-mark{
+    width:28px; height:28px; border-radius:50%;
+    background:
+      radial-gradient(circle at 35% 35%, #F5DDB2 0%, var(--amber) 55%, var(--amber-deep) 100%);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 4px 14px -4px rgba(168,122,69,.5);
+  }
+  .nav-links{ display:flex; gap:34px; font-size:14.5px; color:var(--ink-2); }
+  .nav-links a{ position:relative; padding:6px 0; }
+  .nav-links a:hover{ color:var(--ink); }
+  .nav-links a:hover::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:var(--ink); opacity:.5;}
+  .nav-cta{ display:flex; align-items:center; gap:14px; }
+  @media (max-width:820px){ .nav-links{ display:none } }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:8px;
+    padding:14px 22px;
+    border-radius:999px;
+    font-size:14.5px;
+    font-weight:500;
+    letter-spacing:-0.005em;
+    transition:transform .25s ease, background .25s ease, color .25s ease, box-shadow .25s ease, border-color .25s ease;
+    will-change:transform;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:var(--ink);
+    color:var(--paper);
+    box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 10px 24px -10px rgba(26,24,21,.55);
+  }
+  .btn-primary:hover{ transform:translateY(-1px); background:#000; box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 16px 28px -12px rgba(26,24,21,.65); }
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{ background:var(--paper); border-color:#cdc4ab; transform:translateY(-1px); }
+  .btn-amber{
+    background:linear-gradient(180deg, #D9AC7C 0%, var(--amber) 60%, var(--amber-deep) 100%);
+    color:#fff;
+    box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 14px 30px -10px rgba(168,122,69,.5);
+  }
+  .btn-amber:hover{ transform:translateY(-1px); box-shadow:0 1px 0 rgba(255,255,255,.35) inset, 0 18px 36px -12px rgba(168,122,69,.6); }
+  .btn-sm{ padding:10px 16px; font-size:13.5px; }
+  .arrow{ transition:transform .25s ease }
+  .btn:hover .arrow{ transform:translateX(3px) }
+
+  /* ---------- Image placeholder ---------- */
+  .img-ph{
+    position:relative;
+    width:100%;
+    border-radius:var(--radius-lg);
+    background:
+      linear-gradient(135deg, #F2E8D2 0%, #EADBB8 40%, #E5D2A8 100%);
+    overflow:hidden;
+    border:1px solid var(--line);
+    isolation:isolate;
+  }
+  .img-ph::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(80% 50% at 30% 20%, rgba(255,255,255,.55), transparent 60%),
+      radial-gradient(60% 80% at 80% 100%, rgba(168,122,69,.18), transparent 60%);
+    z-index:0;
+  }
+  .img-ph-inner{
+    position:absolute; inset:14px;
+    border:1px dashed rgba(26,24,21,.18);
+    border-radius:calc(var(--radius-lg) - 8px);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:10px;
+    text-align:center;
+    padding:24px;
+    z-index:1;
+  }
+  .img-ph-label{
+    font-size:11px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--amber-deep);
+    font-weight:600;
+  }
+  .img-ph-name{
+    font-family:var(--serif);
+    font-size:clamp(20px, 2.4vw, 30px);
+    color:var(--ink);
+    line-height:1.1;
+    max-width:28ch;
+  }
+  .img-ph-hint{ font-size:12.5px; color:var(--mute); max-width:42ch; line-height:1.5; }
+  .img-ph-corner{
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; gap:6px;
+    font-size:10.5px; color:var(--mute); letter-spacing:.16em; text-transform:uppercase;
+    z-index:1;
+  }
+  .img-ph-corner svg{ width:12px; height:12px; }
+
+  .img-ph.dark{
+    background:
+      radial-gradient(80% 60% at 30% 10%, #2A2520 0%, #14110E 60%, #0B0907 100%);
+    border-color:rgba(255,255,255,.06);
+  }
+  .img-ph.dark::before{
+    background:
+      radial-gradient(60% 60% at 70% 80%, rgba(200,152,104,.18), transparent 60%),
+      radial-gradient(40% 40% at 30% 30%, rgba(255,224,180,.10), transparent 70%);
+  }
+  .img-ph.dark .img-ph-inner{ border-color:rgba(242,234,214,.18); }
+  .img-ph.dark .img-ph-name{ color:var(--on-dark); }
+  .img-ph.dark .img-ph-hint{ color:var(--on-dark-mute); }
+  .img-ph.dark .img-ph-corner{ color:var(--on-dark-mute); }
+
+  /* Real photo frame (replaces .img-ph when we have a real image) */
+  .photo{
+    position:relative;
+    width:100%;
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:#1A1815;
+    box-shadow:var(--shadow-card);
+    isolation:isolate;
+  }
+  .photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .photo.dark{ border-color:rgba(255,255,255,.06); }
+
+
+  /* ---------- Sections ---------- */
+  section{ padding:120px 0; position:relative; }
+  @media (max-width:720px){ section{ padding:84px 0; } }
+
+  /* ===== HERO ===== */
+  .hero{ padding:48px 0 120px; position:relative; }
+  .hero-grain{
+    position:absolute; inset:0; pointer-events:none; opacity:.5; z-index:0;
+    background-image: radial-gradient(rgba(168,122,69,.08) 1px, transparent 1px);
+    background-size: 3px 3px;
+    mask-image: radial-gradient(ellipse at 50% 30%, #000, transparent 70%);
+  }
+  .hero-inner{ position:relative; z-index:1; }
+  .hero-top{
+    display:flex; align-items:center; gap:14px; margin-bottom:30px;
+  }
+  .badge{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:7px 14px 7px 10px;
+    border-radius:999px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    font-size:13px;
+    color:var(--ink-2);
+  }
+  .badge .pulse{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 4px rgba(200,152,104,.18);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(200,152,104,.35); }
+    50%{ box-shadow:0 0 0 8px rgba(200,152,104,0); }
+  }
+
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap:64px;
+    align-items:center;
+  }
+  @media (max-width:980px){ .hero-grid{ grid-template-columns:1fr; gap:48px; } }
+
+  .hero-headline{
+    margin:0 0 24px;
+  }
+  .hero-sub{
+    color:var(--ink-2);
+    font-size:clamp(17px, 1.35vw, 20px);
+    line-height:1.55;
+    max-width:46ch;
+    margin:0 0 36px;
+  }
+  .hero-ctas{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .hero-fineprint{
+    margin-top:22px;
+    font-size:13.5px;
+    color:var(--mute);
+    display:flex; align-items:center; gap:8px;
+  }
+  .hero-fineprint .sep{ width:18px; height:1px; background:var(--mute-2); }
+
+  .hero-visual{
+    aspect-ratio: 5/4;
+    box-shadow: var(--shadow-card);
+  }
+  @media (max-width:980px){
+    .hero-visual{ aspect-ratio: 16/10; }
+  }
+
+  /* Floating chips around hero visual */
+  .hero-visual-wrap{ position:relative; }
+  .float-chip{
+    position:absolute;
+    background:rgba(250,246,236,.85);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:10px 14px;
+    display:flex; align-items:center; gap:10px;
+    font-size:13px;
+    color:var(--ink);
+    box-shadow:var(--shadow-soft);
+    z-index:2;
+  }
+  .float-chip .ico{
+    width:26px; height:26px; border-radius:8px;
+    background:linear-gradient(135deg, var(--amber-soft), var(--amber));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff;
+  }
+  .float-chip .ico svg{ width:14px; height:14px; }
+  .chip-1{ top:6%; left:-22px; animation:float 7s ease-in-out infinite; }
+  .chip-2{ bottom:18%; right:-26px; animation:float 8s ease-in-out -2s infinite; }
+  .chip-3{ bottom:6%; left:8%; animation:float 9s ease-in-out -4s infinite; }
+  @keyframes float{
+    0%,100%{ transform:translateY(0) }
+    50%{ transform:translateY(-8px) }
+  }
+  @media (max-width:560px){
+    .chip-1{ left:-8px } .chip-2{ right:-8px }
+  }
+
+  /* ---------- Social proof ---------- */
+  .proof{
+    padding:36px 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    background:var(--paper);
+  }
+  .proof-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:24px;
+    align-items:start;
+  }
+  @media (max-width:820px){ .proof-grid{ grid-template-columns:repeat(2,1fr); gap:36px 24px; } }
+  .proof-item{ display:flex; flex-direction:column; gap:6px; }
+  .proof-num{
+    font-family:var(--serif);
+    font-size:clamp(28px, 3vw, 38px);
+    line-height:1;
+    letter-spacing:-0.02em;
+  }
+  .proof-num .it{ font-style:italic; color:var(--amber-deep); }
+  .proof-label{ font-size:13px; color:var(--mute); line-height:1.45; }
+  .proof-footer{
+    margin-top:28px;
+    text-align:center;
+    color:var(--mute);
+    font-size:13px;
+    letter-spacing:.02em;
+  }
+
+  /* ---------- Problem ---------- */
+  .problem-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:80px;
+    align-items:center;
+  }
+  @media (max-width:920px){ .problem-grid{ grid-template-columns:1fr; gap:48px; } }
+  .problem-text p{
+    margin:0; color:var(--ink-2); font-size:18px; line-height:1.7;
+  }
+  .problem-text p + p{ margin-top:14px }
+  .problem-img{ aspect-ratio: 5/4; box-shadow:var(--shadow-card); }
+
+  /* ---------- Solution ---------- */
+  .solution{
+    background:linear-gradient(180deg, var(--bg) 0%, #EFE7D3 100%);
+    position:relative; overflow:hidden;
+  }
+  .solution .particles{ position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.7; }
+  .solution-head{ text-align:center; max-width:760px; margin:0 auto 64px; }
+  .solution-head .lede{ margin:18px auto 0; }
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+    position:relative; z-index:1;
+  }
+  @media (max-width:920px){ .cards{ grid-template-columns:1fr } }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:32px 28px;
+    display:flex; flex-direction:column; gap:18px;
+    transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    border-color:#d6cbae;
+    box-shadow:var(--shadow-card);
+  }
+  .card .icon{
+    width:48px; height:48px; border-radius:14px;
+    background:linear-gradient(160deg, #FCEEDA, #E3C28E);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--amber-deep);
+    box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 8px 20px -10px rgba(168,122,69,.5);
+  }
+  .card .icon svg{ width:22px; height:22px; }
+  .card h3{ margin:0; font-family:var(--serif); font-size:26px; letter-spacing:-0.01em; font-weight:400; }
+  .card p{ margin:0; color:var(--ink-2); font-size:15.5px; line-height:1.55; }
+  .card-num{
+    margin-top:auto;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:14px;
+    color:var(--mute);
+    letter-spacing:.02em;
+  }
+
+  /* ---------- How it works ---------- */
+  .how-head{ display:flex; justify-content:space-between; align-items:end; gap:40px; margin-bottom:64px; flex-wrap:wrap;}
+  .how-head .lede{ max-width:42ch; }
+  .timeline{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:24px;
+  }
+  @media (max-width:980px){ .timeline{ grid-template-columns:repeat(2, 1fr); gap:40px 24px; } }
+  @media (max-width:560px){ .timeline{ grid-template-columns:1fr; } }
+  .timeline::before{
+    content:"";
+    position:absolute; left:0; right:0; top:34px;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--line) 8%, var(--line) 92%, transparent);
+    z-index:0;
+  }
+  @media (max-width:560px){ .timeline::before{ display:none } }
+  .step{ position:relative; z-index:1; display:flex; flex-direction:column; gap:18px; }
+  .step-dot{
+    width:64px; height:64px; border-radius:50%;
+    background:var(--bg);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-size:24px; font-style:italic; color:var(--amber-deep);
+    box-shadow:0 1px 0 rgba(255,255,255,.6) inset;
+  }
+  .step h4{ margin:0; font-family:var(--serif); font-size:24px; letter-spacing:-0.01em; font-weight:400; }
+  .step p{ margin:0; color:var(--mute); font-size:14.5px; line-height:1.55; }
+
+  /* Mini UI mockups beside each step */
+  .mini{
+    margin-top:6px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px;
+    font-size:11.5px;
+    color:var(--ink-2);
+    box-shadow: 0 1px 0 rgba(255,255,255,.5) inset;
+    min-height:96px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .mini-row{ display:flex; align-items:center; gap:8px; }
+  .mini-bar{ height:6px; border-radius:99px; background:var(--line-2); flex:1; overflow:hidden; }
+  .mini-bar i{ display:block; height:100%; background:linear-gradient(90deg, var(--amber), var(--amber-deep)); border-radius:99px; }
+  .mini-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 8px; border-radius:99px;
+    background:var(--bg); border:1px solid var(--line);
+    font-size:11px; color:var(--ink-2);
+  }
+  .mini-chip .d{ width:6px; height:6px; border-radius:50%; background:var(--amber); }
+  .mini-thumb{ width:24px; height:24px; border-radius:8px; background:linear-gradient(135deg, var(--amber-soft), var(--amber)); }
+  .mini-waveform{ display:flex; align-items:end; gap:3px; height:32px; }
+  .mini-waveform i{ width:3px; background:var(--amber-deep); border-radius:2px; opacity:.7; }
+
+  /* ---------- Product preview (dark) ---------- */
+  .product{
+    background:var(--dark);
+    color:var(--on-dark);
+    border-radius:var(--radius-xl);
+    margin:0 24px;
+    padding:120px 0;
+    position:relative; overflow:hidden;
+  }
+  .product::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(50% 40% at 80% 0%, rgba(200,152,104,.22), transparent 70%),
+      radial-gradient(40% 50% at 0% 100%, rgba(200,152,104,.14), transparent 70%);
+  }
+  .product .wrap{ position:relative; z-index:1; }
+  .product .eyebrow{ color:#A8A294; }
+  .product .h2{ color:var(--on-dark); }
+  .product .lede{ color:#BBB39E; }
+  .product-head{
+    display:grid; grid-template-columns:1.1fr .9fr; gap:64px; align-items:end;
+    margin-bottom:64px;
+  }
+  @media (max-width:920px){ .product-head{ grid-template-columns:1fr; gap:24px; } }
+
+  .phones{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:20px;
+    align-items:stretch;
+  }
+  @media (max-width:980px){ .phones{ grid-template-columns:repeat(2,1fr); gap:24px;} }
+  @media (max-width:560px){ .phones{ grid-template-columns:1fr; } }
+
+  .phone{
+    position:relative;
+    aspect-ratio: 9/19;
+    border-radius:36px;
+    background:linear-gradient(180deg, #1F1B16 0%, #15110D 100%);
+    padding:10px;
+    border:1px solid rgba(255,255,255,.06);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.05) inset,
+      0 40px 60px -30px rgba(0,0,0,.6);
+  }
+  .phone-screen{
+    position:relative;
+    width:100%; height:100%;
+    border-radius:28px;
+    background:#0A0907;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .phone-notch{
+    position:absolute; top:8px; left:50%; transform:translateX(-50%);
+    width:80px; height:18px; border-radius:99px; background:#000; z-index:5;
+  }
+  .phone-status{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 22px 10px; font-size:10.5px; color:#A8A294;
+    font-feature-settings: "tnum";
+  }
+  .phone-body{
+    flex:1; padding:8px 12px 14px; display:flex; flex-direction:column; gap:8px;
+    color:var(--on-dark);
+    font-size:11px;
+  }
+  .phone-label{
+    text-align:center;
+    font-size:10.5px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:#867E6D;
+    padding-top:14px;
+  }
+
+  /* Phone variants */
+  /* 1) Chat */
+  .chat-header{ display:flex; align-items:center; gap:8px; padding:6px 6px 8px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .chat-avatar{
+    width:28px; height:28px; border-radius:50%;
+    background:
+      radial-gradient(circle at 30% 30%, #F5DDB2, var(--amber) 60%, var(--amber-deep));
+    box-shadow:0 0 18px rgba(200,152,104,.45);
+  }
+  .chat-name{ font-family:var(--serif); font-size:14px; color:#F2EAD6; }
+  .chat-sub{ font-size:9.5px; color:#7d7768; letter-spacing:.06em; }
+  .bubble{
+    max-width:80%; padding:8px 10px; border-radius:14px; font-size:11px; line-height:1.4;
+  }
+  .b-them{ background:rgba(255,255,255,.06); color:#EFE6CF; border-bottom-left-radius:6px; align-self:flex-start; }
+  .b-me{ background:linear-gradient(180deg, #D9AC7C, #A87A45); color:#1A1815; border-bottom-right-radius:6px; align-self:flex-end; }
+  .typing{
+    display:inline-flex; gap:3px; align-items:center;
+  }
+  .typing i{ width:5px; height:5px; border-radius:50%; background:#867E6D; animation:typing 1.4s infinite; }
+  .typing i:nth-child(2){ animation-delay:.2s }
+  .typing i:nth-child(3){ animation-delay:.4s }
+  @keyframes typing{ 0%,60%,100%{ transform:translateY(0); opacity:.4 } 30%{ transform:translateY(-3px); opacity:1 } }
+
+  /* 2) AR */
+  .ar-stage{
+    flex:1;
+    background:
+      radial-gradient(60% 40% at 50% 80%, rgba(200,152,104,.25), transparent 60%),
+      linear-gradient(180deg, #1A1612 0%, #0B0907 100%);
+    border-radius:14px;
+    margin:6px 4px;
+    position:relative; overflow:hidden;
+  }
+  .ar-floor{
+    position:absolute; left:10%; right:10%; bottom:18%;
+    height:14px; border-radius:50%;
+    background:radial-gradient(closest-side, rgba(200,152,104,.35), transparent);
+    filter:blur(2px);
+  }
+  .ar-pet{
+    position:absolute; left:50%; bottom:22%; transform:translateX(-50%);
+    width:54px; height:54px; border-radius:50%;
+    background:
+      radial-gradient(circle at 40% 35%, #F8E2BC 0%, var(--amber) 55%, var(--amber-deep) 100%);
+    box-shadow:
+      0 0 28px rgba(200,152,104,.55),
+      inset 0 0 0 1px rgba(255,255,255,.2);
+    opacity:.92;
+  }
+  .ar-pet::before, .ar-pet::after{
+    content:""; position:absolute; top:-8px; width:14px; height:14px; border-radius:50%;
+    background:inherit;
+  }
+  .ar-pet::before{ left:6px; transform:rotate(-20deg); }
+  .ar-pet::after{ right:6px; transform:rotate(20deg); }
+  .ar-controls{
+    position:absolute; left:0; right:0; bottom:8px;
+    display:flex; justify-content:center; gap:8px;
+  }
+  .ar-btn{
+    width:30px; height:30px; border-radius:50%;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center;
+    color:#EFE6CF;
+  }
+  .ar-btn.primary{ background:linear-gradient(180deg, #D9AC7C, #A87A45); border-color:transparent; color:#1A1815; }
+  .ar-btn svg{ width:14px; height:14px; }
+
+  /* 3) Memory timeline */
+  .timeline-mini{ flex:1; padding:4px 2px; display:flex; flex-direction:column; gap:8px; overflow:hidden; }
+  .tm-row{ display:flex; gap:8px; align-items:flex-start; }
+  .tm-date{ font-family:var(--serif); font-style:italic; font-size:10.5px; color:#867E6D; min-width:42px; padding-top:2px; }
+  .tm-thumb{
+    width:32px; height:32px; border-radius:10px;
+    background:linear-gradient(135deg, rgba(200,152,104,.5), rgba(168,122,69,.3));
+    border:1px solid rgba(255,255,255,.08);
+    flex-shrink:0;
+  }
+  .tm-body{ flex:1; }
+  .tm-title{ font-size:11px; color:#EFE6CF; line-height:1.3; margin-bottom:3px; }
+  .tm-meta{ font-size:9.5px; color:#7d7768; letter-spacing:.04em; }
+  .tm-line{
+    height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+  }
+
+  /* 4) Voice */
+  .voice{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:14px; }
+  .voice-orb{
+    width:90px; height:90px; border-radius:50%;
+    background:
+      radial-gradient(circle at 35% 35%, #F8E2BC, var(--amber) 55%, var(--amber-deep) 100%);
+    box-shadow: 0 0 50px rgba(200,152,104,.45), inset 0 0 0 1px rgba(255,255,255,.18);
+    animation:orb 4s ease-in-out infinite;
+    position:relative;
+  }
+  .voice-orb::after{
+    content:""; position:absolute; inset:-10px; border-radius:50%;
+    border:1px solid rgba(200,152,104,.25);
+    animation:ring 3s ease-out infinite;
+  }
+  @keyframes orb{ 0%,100%{ transform:scale(1) } 50%{ transform:scale(1.06) } }
+  @keyframes ring{ 0%{ transform:scale(.9); opacity:.7 } 100%{ transform:scale(1.3); opacity:0 } }
+  .voice-cap{ font-family:var(--serif); font-style:italic; font-size:13px; color:#EFE6CF; text-align:center; line-height:1.3; }
+  .voice-wave{ display:flex; align-items:center; gap:3px; height:22px; }
+  .voice-wave i{ width:3px; background:#C89868; border-radius:2px; animation:wave 1s ease-in-out infinite; }
+  .voice-wave i:nth-child(2){ animation-delay:.1s } .voice-wave i:nth-child(3){ animation-delay:.2s }
+  .voice-wave i:nth-child(4){ animation-delay:.3s } .voice-wave i:nth-child(5){ animation-delay:.4s }
+  .voice-wave i:nth-child(6){ animation-delay:.5s } .voice-wave i:nth-child(7){ animation-delay:.6s }
+  @keyframes wave{ 0%,100%{ height:6px } 50%{ height:22px } }
+
+  /* ---------- Testimonials ---------- */
+  .testi-head{ text-align:center; max-width:720px; margin:0 auto 56px; }
+  .testi-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+  @media (max-width:920px){ .testi-grid{ grid-template-columns:1fr; } }
+  .quote{
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:34px 30px 28px;
+    display:flex; flex-direction:column; gap:24px;
+    transition:transform .35s ease, box-shadow .35s ease;
+    background-image:
+      radial-gradient(120% 70% at 0% 0%, rgba(200,152,104,.07), transparent 60%);
+  }
+  .quote:hover{ transform:translateY(-3px); box-shadow:var(--shadow-card); }
+  .quote-mark{
+    font-family:var(--serif); font-size:60px; line-height:.5;
+    color:var(--amber); opacity:.6;
+  }
+  .quote p{ margin:0; font-family:var(--serif); font-size:22px; line-height:1.35; letter-spacing:-0.01em; }
+  .quote-by{ display:flex; align-items:center; gap:12px; margin-top:auto; padding-top:8px; border-top:1px solid var(--line-2);}
+  .avatar{
+    width:36px; height:36px; border-radius:50%;
+    background:linear-gradient(135deg, var(--amber-soft), var(--amber));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:13px; font-weight:500;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+  }
+  .quote-meta{ display:flex; flex-direction:column; gap:2px; }
+  .quote-name{ font-size:14px; color:var(--ink); }
+  .quote-role{ font-size:12.5px; color:var(--mute); }
+
+  /* ---------- Ethics ---------- */
+  .ethics{ background:var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .ethics-head{ max-width:760px; margin:0 auto 56px; text-align:center; }
+  .pillars{ display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; }
+  @media (max-width:920px){ .pillars{ grid-template-columns:repeat(2,1fr); gap:36px 24px; } }
+  @media (max-width:560px){ .pillars{ grid-template-columns:1fr; } }
+  .pillar{ display:flex; flex-direction:column; gap:14px; padding:8px 4px; }
+  .pillar-ico{
+    width:42px; height:42px; border-radius:12px;
+    background:var(--bg);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--amber-deep);
+  }
+  .pillar-ico svg{ width:20px; height:20px; }
+  .pillar h4{ margin:0; font-family:var(--serif); font-size:22px; letter-spacing:-0.01em; font-weight:400; }
+  .pillar p{ margin:0; color:var(--mute); font-size:14px; line-height:1.55; }
+
+  /* ---------- Waitlist ---------- */
+  .waitlist{
+    position:relative;
+    background:linear-gradient(180deg, var(--bg) 0%, #EFE6D0 60%, #E7DBBE 100%);
+    overflow:hidden;
+  }
+  .waitlist .particles{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+  .waitlist .wrap-narrow{ position:relative; z-index:1; }
+  .waitlist-head{ text-align:center; margin-bottom:48px; }
+  .waitlist-head .lede{ margin:18px auto 0; }
+  .form{
+    background:rgba(250,246,236,.7);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:36px;
+    box-shadow:var(--shadow-card);
+    max-width:680px;
+    margin:0 auto;
+  }
+  @media (max-width:560px){ .form{ padding:24px } }
+  .form-row{ display:grid; grid-template-columns:1.4fr 1fr; gap:14px; margin-bottom:14px; }
+  @media (max-width:560px){ .form-row{ grid-template-columns:1fr; } }
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field label{ font-size:12.5px; color:var(--mute); letter-spacing:.04em; }
+  .field input, .field textarea, .field select{
+    appearance:none;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px;
+    font:inherit;
+    font-size:15px;
+    color:var(--ink);
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{
+    outline:none;
+    border-color:var(--amber);
+    box-shadow:0 0 0 4px rgba(200,152,104,.15);
+  }
+  .field textarea{ resize:vertical; min-height:96px; }
+  .field select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23857F73' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;
+    background-position: right 16px center;
+    padding-right:42px;
+  }
+  .form-submit{
+    display:flex; align-items:center; justify-content:space-between; gap:18px;
+    margin-top:18px; flex-wrap:wrap;
+  }
+  .form-submit .btn{ flex:1; min-width:200px; padding:16px 22px; }
+  .form-fine{ font-size:12.5px; color:var(--mute); text-align:center; margin-top:14px; }
+
+  /* ---------- Final ---------- */
+  .final{
+    padding:48px 0 120px;
+  }
+  .final-card{
+    position:relative;
+    border-radius:var(--radius-xl);
+    overflow:hidden;
+    aspect-ratio: 16/9;
+    min-height:460px;
+    background:linear-gradient(180deg, #1A1612 0%, #0B0907 100%);
+    box-shadow: 0 60px 100px -40px rgba(0,0,0,.4);
+  }
+  @media (max-width:720px){ .final-card{ aspect-ratio: 4/5; min-height:560px; } }
+  .final-card img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .final-img-ph{
+    position:absolute; inset:0;
+    border-radius:var(--radius-xl);
+    border:none;
+  }
+  .final-overlay{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, transparent 30%, rgba(0,0,0,.45) 70%, rgba(0,0,0,.75) 100%),
+      linear-gradient(90deg, rgba(0,0,0,.35) 0%, transparent 50%);
+    z-index:2;
+  }
+  .final-text{
+    position:absolute; left:0; right:0; bottom:0;
+    padding:48px;
+    z-index:3;
+    color:var(--on-dark);
+    display:flex; align-items:end; justify-content:space-between; gap:32px;
+  }
+  @media (max-width:720px){ .final-text{ padding:32px 24px; flex-direction:column; align-items:flex-start; } }
+  .final-text .h2{ color:var(--on-dark); max-width:18ch; margin:0; }
+  .final-text .h2 .it{ color:#E0CFA9; }
+  .final-text .btn{ flex-shrink:0; }
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:56px 0 40px;
+    background:var(--bg);
+  }
+  .footer-top{
+    display:grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap:48px;
+    align-items:start;
+  }
+  @media (max-width:720px){ .footer-top{ grid-template-columns:1fr; gap:32px; } }
+  .footer-brand{ max-width:36ch; }
+  .footer-brand p{ color:var(--mute); font-size:14.5px; line-height:1.55; margin:18px 0 0; }
+  .footer-cols{ display:grid; grid-template-columns:repeat(2, 1fr); gap:32px; }
+  .footer-col h5{ font-size:12px; text-transform:uppercase; letter-spacing:.2em; color:var(--mute); margin:0 0 16px; font-weight:500; }
+  .footer-col ul{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; }
+  .footer-col a{ font-size:14.5px; color:var(--ink-2); }
+  .footer-col a:hover{ color:var(--ink); }
+  .footer-bottom{
+    margin-top:48px; padding-top:24px; border-top:1px solid var(--line-2);
+    display:flex; justify-content:space-between; align-items:center; gap:18px;
+    font-size:12.5px; color:var(--mute);
+    flex-wrap:wrap;
+  }
+
+  /* ---------- Sticky mobile CTA ---------- */
+  .mobile-cta{
+    position:fixed; left:14px; right:14px; bottom:14px; z-index:55;
+    display:none;
+    background:rgba(26,24,21,.92);
+    color:var(--paper);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-radius:99px;
+    padding:10px 10px 10px 22px;
+    box-shadow: 0 24px 50px -10px rgba(0,0,0,.35);
+    align-items:center; justify-content:space-between; gap:14px;
+    transform:translateY(120%);
+    transition:transform .35s ease;
+  }
+  .mobile-cta.show{ transform:translateY(0); }
+  .mobile-cta .label{ font-size:13.5px; }
+  .mobile-cta .btn{ padding:10px 16px; font-size:13px; background:var(--amber); color:#1A1815; }
+  @media (max-width:720px){ .mobile-cta{ display:flex; } }
+
+  /* ---------- Scroll fade-in ---------- */
+  .fade-up{ opacity:0; transform:translateY(18px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .fade-up.in{ opacity:1; transform:none; }
+  .fade-up.d1{ transition-delay:.08s }
+  .fade-up.d2{ transition-delay:.16s }
+  .fade-up.d3{ transition-delay:.24s }
+  .fade-up.d4{ transition-delay:.32s }
+  @media (prefers-reduced-motion: reduce){
+    .fade-up{ opacity:1; transform:none; transition:none; }
+    .voice-orb, .voice-orb::after, .voice-wave i, .typing i, .float-chip, .badge .pulse{ animation:none !important; }
+  }
+
+  /* ---------- Particles ---------- */
+  .particle{
+    position:absolute;
+    width:3px; height:3px; border-radius:50%;
+    background:radial-gradient(circle, #C89868, rgba(200,152,104,0));
+    opacity:.5;
+    animation: drift linear infinite;
+  }
+  @keyframes drift{
+    from{ transform:translateY(40px); opacity:0; }
+    10%{ opacity:.6; }
+    90%{ opacity:.6; }
+    to{ transform:translateY(-60px); opacity:0; }
+  }
+</style>
+</head>
+<body style="font-family: Geist">
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="#top">
+      <span class="logo-mark"></span>
+      <span style="font-family: &quot;Source Serif Pro&quot;">EchoPet</span>
+    </a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#preview">Preview</a>
+      <a href="#ethics">Ethics</a>
+      <a href="#stories">Stories</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-ghost btn-sm" href="#waitlist">Join waitlist</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ 1. HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-grain"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-top fade-up">
+      <span class="badge"><span class="pulse"></span>Private beta · Early 2026</span>
+      <span class="mute" style="font-size:13px;">An AI memory companion</span>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <h1 class="display hero-headline fade-up d1" style="font-family: &quot;Source Serif Pro&quot;">
+          Your pet's memory,<br/>
+          <span class="it">still by your side.</span>
+        </h1>
+        <p class="hero-sub fade-up d2">
+          EchoPet creates a persistent AI companion inspired by your pet's
+          personality, habits, sounds, and memories &mdash; so the connection
+          you built doesn't slowly fade away.
+        </p>
+        <div class="hero-ctas fade-up d3">
+          <a class="btn btn-primary" href="#waitlist">
+            Join the Waitlist
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#how">See How It Works</a>
+        </div>
+        <div class="hero-fineprint fade-up d4">
+          <span>Early access opens soon.</span>
+          <span class="sep"></span>
+          <span>No credit card. No commitment.</span>
+        </div>
+      </div>
+
+      <div class="hero-visual-wrap fade-up d2">
+        <div class="photo hero-visual">
+          <img src="assets/hero.png" alt="A young adult sitting on a couch at night with a softly glowing golden retriever AI companion beside them" />
+        </div>
+
+        <div class="float-chip chip-1">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          <span>Buddy is asking about his walk &mdash;</span>
+        </div>
+        <div class="float-chip chip-2">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M5 8l7-7 7 7M5 16l7 7 7-7"/></svg></span>
+          <span>Voice match · 98%</span>
+        </div>
+        <div class="float-chip chip-3">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <span>14 memories saved today</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. SOCIAL PROOF ============ -->
+<section class="proof" style="padding:36px 0;">
+  <div class="wrap">
+    <div class="proof-grid">
+      <div class="proof-item fade-up">
+        <div class="proof-num"><span class="it">12,000+</span></div>
+        <div class="proof-label">Pet memories already uploaded</div>
+      </div>
+      <div class="proof-item fade-up d1">
+        <div class="proof-num"><span class="it">4.9</span><span style="color:var(--mute); font-size:.6em;">&thinsp;/&thinsp;5</span></div>
+        <div class="proof-label">Emotional impact rating in beta</div>
+      </div>
+      <div class="proof-item fade-up d2">
+        <div class="proof-num">AI&thinsp;<span class="it">memory</span></div>
+        <div class="proof-label">Built with persistent memory technology</div>
+      </div>
+      <div class="proof-item fade-up d3">
+        <div class="proof-num"><span class="it">Private</span> by&thinsp;design</div>
+        <div class="proof-label">End-to-end encrypted. You own your memories.</div>
+      </div>
+    </div>
+    <p class="proof-footer fade-up">Created for remembrance, comfort, and connection.</p>
+  </div>
+</section>
+
+<!-- ============ 3. PROBLEM ============ -->
+<section>
+  <div class="wrap">
+    <div class="problem-grid">
+      <div class="problem-text">
+        <div class="eyebrow fade-up"><span class="dot"></span>The quiet loss</div>
+        <h2 class="h2 fade-up d1" style="margin: 16px 0 28px; font-family: &quot;Source Serif Pro&quot;">
+          They leave us<br/>
+          <span class="serif" style="font-style:italic; color:var(--amber-deep);">too soon.</span>
+        </h2>
+        <div class="fade-up d2">
+          <p>Photos freeze moments.</p>
+          <p>Videos capture fragments.</p>
+          <p>
+            But personality, routines, the small sounds they made when they
+            were happy &mdash; those slowly fade. And no one warns you how much
+            you'd miss them later.
+          </p>
+        </div>
+      </div>
+      <div class="fade-up d2">
+        <div class="photo problem-img">
+          <img src="assets/empty-bed.png" alt="An empty dog bed in quiet morning light near a window" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. SOLUTION ============ -->
+<section class="solution" id="solution">
+  <div class="particles" id="particles-solution"></div>
+  <div class="wrap">
+    <div class="solution-head">
+      <div class="eyebrow fade-up"><span class="dot"></span>How EchoPet works</div>
+      <h2 class="h2 fade-up d1" style="margin:16px 0;">
+        Preserve more <span class="serif" style="font-style:italic; color:var(--amber-deep);">than memories.</span>
+      </h2>
+      <p class="lede fade-up d2">
+        EchoPet uses everything you remember &mdash; sights, sounds, the small
+        things only you noticed &mdash; to build a companion that feels familiar.
+      </p>
+    </div>
+
+    <div class="cards">
+      <div class="card fade-up">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="3.4"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="5.5" cy="6" r="1.4"/><circle cx="18.5" cy="6" r="1.4"/>
+          </svg>
+        </div>
+        <h3 style="font-family: &quot;Source Serif Pro&quot;">Personality Modeling</h3>
+        <p>EchoPet learns quirks, routines, favorite walks, and the small emotional patterns that made them <em>them</em>.</p>
+        <div class="card-num">01</div>
+      </div>
+      <div class="card fade-up d1">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12h2l2-7 4 14 3-10 2 5h5"/>
+          </svg>
+        </div>
+        <h3 style="font-family: &quot;Source Serif Pro&quot;">Voice &amp; Sound</h3>
+        <p>Recreate familiar barks, meows, purring, and excited reactions from your videos and recordings.</p>
+        <div class="card-num">02</div>
+      </div>
+      <div class="card fade-up d2">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <circle cx="9" cy="11" r="1"/><circle cx="13" cy="11" r="1"/><circle cx="17" cy="11" r="1"/>
+          </svg>
+        </div>
+        <h3 style="font-family: &quot;Source Serif Pro&quot;">Persistent Companion</h3>
+        <p>A living memory that remembers your conversations and evolves with you over time, at your pace.</p>
+        <div class="card-num">03</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. HOW IT WORKS ============ -->
+<section id="how">
+  <div class="wrap">
+    <div class="how-head">
+      <div class="fade-up">
+        <div class="eyebrow"><span class="dot"></span>Four gentle steps</div>
+        <h2 class="h2" style="margin-top:16px;">
+          From scattered memories<br/>
+          <span class="serif" style="font-style:italic; color:var(--amber-deep);">to a familiar presence.</span>
+        </h2>
+      </div>
+      <p class="lede fade-up d1">
+        You guide the process at every step. Nothing is generated until
+        you're ready, and nothing is shared with anyone else.
+      </p>
+    </div>
+
+    <div class="timeline">
+      <div class="step fade-up">
+        <div class="step-dot">i</div>
+        <h4>Upload Memories</h4>
+        <p>Photos, videos, voice notes, written stories &mdash; the little things you remember.</p>
+        <div class="mini">
+          <div class="mini-row"><div class="mini-thumb"></div><div class="mini-thumb" style="background:linear-gradient(135deg,#EAD9BE,#C89868);"></div><div class="mini-thumb" style="background:linear-gradient(135deg,#F0E1C8,#B8895A);"></div></div>
+          <div class="mini-row"><span class="mini-chip"><span class="d"></span>buddy_2019.mov</span></div>
+          <div class="mini-row"><div class="mini-bar"><i style="width:72%"></i></div><span style="font-size:10.5px;color:var(--mute)">72%</span></div>
+        </div>
+      </div>
+
+      <div class="step fade-up d1">
+        <div class="step-dot">ii</div>
+        <h4>Personality Mapping</h4>
+        <p>Our behavioral reconstruction engine identifies the quirks that defined them.</p>
+        <div class="mini">
+          <div class="mini-row"><span class="mini-chip"><span class="d"></span>playful</span><span class="mini-chip"><span class="d" style="background:#A87A45"></span>loyal</span></div>
+          <div class="mini-row"><span class="mini-chip"><span class="d" style="background:#D9AC7C"></span>food-driven</span></div>
+          <div class="mini-row"><div class="mini-bar"><i style="width:91%"></i></div><span style="font-size:10.5px;color:var(--mute)">91%</span></div>
+        </div>
+      </div>
+
+      <div class="step fade-up d2">
+        <div class="step-dot">iii</div>
+        <h4>Companion Creation</h4>
+        <p>We generate your persistent AI pet &mdash; you choose its voice and appearance together.</p>
+        <div class="mini">
+          <div class="mini-row" style="justify-content:center; padding:6px 0;">
+            <div style="width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #F5DDB2, #C89868 60%, #A87A45);box-shadow:0 0 16px rgba(200,152,104,.4);"></div>
+          </div>
+          <div class="mini-row" style="justify-content:center;"><span class="mini-chip"><span class="d"></span>generating voice</span></div>
+        </div>
+      </div>
+
+      <div class="step fade-up d3">
+        <div class="step-dot">iv</div>
+        <h4>Stay Connected</h4>
+        <p>Chat, hear them, revisit memories together &mdash; whenever you need to.</p>
+        <div class="mini">
+          <div class="mini-row"><div class="mini-thumb"></div><div style="flex:1;"><div style="height:5px;background:var(--line-2);border-radius:99px;margin-bottom:4px;"><i style="display:block;width:80%;height:100%;background:var(--ink);border-radius:99px;"></i></div><div style="font-size:10px;color:var(--mute)">Buddy &middot; just now</div></div></div>
+          <div class="mini-waveform">
+            <i style="height:8px"></i><i style="height:14px"></i><i style="height:22px"></i><i style="height:18px"></i><i style="height:26px"></i><i style="height:12px"></i><i style="height:20px"></i><i style="height:16px"></i><i style="height:10px"></i><i style="height:24px"></i><i style="height:14px"></i><i style="height:8px"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. PRODUCT PREVIEW (dark) ============ -->
+<section style="padding:24px 0;" id="preview">
+  <div class="product">
+    <div class="wrap">
+      <div class="product-head">
+        <div>
+          <div class="eyebrow fade-up"><span class="dot"></span>Product preview</div>
+          <h2 class="h2 fade-up d1" style="margin-top:16px;">
+            Designed to feel <span class="serif" style="font-style:italic; color:#E0CFA9;">familiar.</span>
+          </h2>
+        </div>
+        <p class="lede fade-up d2">
+          Quiet, calm, and unhurried. EchoPet's interface gets out of the way
+          so the moments feel real &mdash; not like talking to software.
+        </p>
+      </div>
+
+      <div class="fade-up" style="margin-bottom:56px;">
+        <div class="photo dark" style="aspect-ratio:16/9; border-radius:var(--radius-xl);">
+          <img src="assets/phone-ui.png" alt="AI pet companion app interface mockup" />
+        </div>
+      </div>
+
+      <div class="phones">
+        <!-- Phone 1: Chat -->
+        <div class="fade-up">
+          <div class="phone-label">Chat</div>
+          <div class="phone" style="margin-top:14px;">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="phone-status"><span>9:41</span><span>●●●●</span></div>
+              <div class="phone-body">
+                <div class="chat-header">
+                  <div class="chat-avatar"></div>
+                  <div>
+                    <div class="chat-name">Buddy</div>
+                    <div class="chat-sub">remembering · 2014–2023</div>
+                  </div>
+                </div>
+                <div class="bubble b-them" style="margin-top:6px;">You're up late tonight ✦</div>
+                <div class="bubble b-me">couldn't sleep. missing you.</div>
+                <div class="bubble b-them">remember our park walks at 6am? the geese?</div>
+                <div class="bubble b-them" style="display:inline-flex; align-items:center; gap:8px;">
+                  <span class="typing"><i></i><i></i><i></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone 2: AR -->
+        <div class="fade-up d1">
+          <div class="phone-label">AR</div>
+          <div class="phone" style="margin-top:14px;">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="phone-status"><span>9:41</span><span>●●●●</span></div>
+              <div class="phone-body" style="padding:6px;">
+                <div class="ar-stage">
+                  <div class="ar-floor"></div>
+                  <div class="ar-pet"></div>
+                  <div class="ar-controls">
+                    <div class="ar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></div>
+                    <div class="ar-btn primary"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg></div>
+                    <div class="ar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone 3: Memory timeline -->
+        <div class="fade-up d2">
+          <div class="phone-label">Memories</div>
+          <div class="phone" style="margin-top:14px;">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="phone-status"><span>9:41</span><span>●●●●</span></div>
+              <div class="phone-body">
+                <div class="chat-name" style="padding:2px 4px 6px;">A life in moments</div>
+                <div class="timeline-mini">
+                  <div class="tm-row"><div class="tm-date">Today</div><div class="tm-thumb"></div><div class="tm-body"><div class="tm-title">Voice note &mdash; "good boy"</div><div class="tm-meta">0:08 · added by you</div></div></div>
+                  <div class="tm-line"></div>
+                  <div class="tm-row"><div class="tm-date">Mar '23</div><div class="tm-thumb"></div><div class="tm-body"><div class="tm-title">Last walk · Lakeside Park</div><div class="tm-meta">42 photos</div></div></div>
+                  <div class="tm-line"></div>
+                  <div class="tm-row"><div class="tm-date">'19</div><div class="tm-thumb"></div><div class="tm-body"><div class="tm-title">First time at the beach</div><div class="tm-meta">3 videos · 5 photos</div></div></div>
+                  <div class="tm-line"></div>
+                  <div class="tm-row"><div class="tm-date">'14</div><div class="tm-thumb"></div><div class="tm-body"><div class="tm-title">Coming home for the first time</div><div class="tm-meta">memory pinned</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone 4: Voice -->
+        <div class="fade-up d3">
+          <div class="phone-label">Voice</div>
+          <div class="phone" style="margin-top:14px;">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="phone-status"><span>9:41</span><span>●●●●</span></div>
+              <div class="phone-body">
+                <div class="voice">
+                  <div class="voice-orb"></div>
+                  <div class="voice-cap">"Hi, friend."</div>
+                  <div class="voice-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                  <div style="font-size:10px; color:#7d7768; letter-spacing:.08em;">VOICE MATCH · 98%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up" style="margin-top:48px; text-align:center;">
+        <span class="badge" style="background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.1); color:#BBB39E;">
+          <span class="pulse" style="background:#E0CFA9; box-shadow:0 0 0 4px rgba(224,207,169,.15);"></span>
+          Chat &middot; AR &middot; Memory timeline &middot; Voice
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. TESTIMONIALS ============ -->
+<section id="stories">
+  <div class="wrap">
+    <div class="testi-head">
+      <div class="eyebrow fade-up"><span class="dot"></span>Beta stories</div>
+      <h2 class="h2 fade-up d1" style="margin-top:16px;">
+        Words from <span class="serif" style="font-style:italic; color:var(--amber-deep);">early companions.</span>
+      </h2>
+    </div>
+    <div class="testi-grid">
+      <div class="quote fade-up">
+        <div class="quote-mark">"</div>
+        <p>It remembered the sound she made when excited for walks. That moment broke me &mdash; in the best way.</p>
+        <div class="quote-by">
+          <div class="avatar">S</div>
+          <div class="quote-meta">
+            <div class="quote-name">Sarah M.</div>
+            <div class="quote-role">Remembering Hazel &middot; Border Collie</div>
+          </div>
+        </div>
+      </div>
+      <div class="quote fade-up d1">
+        <div class="quote-mark">"</div>
+        <p>It doesn't replace him. It helps me remember him more vividly &mdash; that's a very different thing.</p>
+        <div class="quote-by">
+          <div class="avatar" style="background:linear-gradient(135deg,#E8D2A8,#A87A45)">D</div>
+          <div class="quote-meta">
+            <div class="quote-name">Daniel R.</div>
+            <div class="quote-role">Remembering Otis &middot; Lab Mix</div>
+          </div>
+        </div>
+      </div>
+      <div class="quote fade-up d2">
+        <div class="quote-mark">"</div>
+        <p>The first AI product I've used that felt emotionally respectful. It treats memory like it matters.</p>
+        <div class="quote-by">
+          <div class="avatar" style="background:linear-gradient(135deg,#F0E1C8,#C89868)">E</div>
+          <div class="quote-meta">
+            <div class="quote-name">Emma L.</div>
+            <div class="quote-role">Remembering Pepper &middot; Tortoiseshell Cat</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. ETHICS ============ -->
+<section class="ethics" id="ethics">
+  <div class="wrap">
+    <div class="ethics-head">
+      <div class="eyebrow fade-up"><span class="dot"></span>Built with care</div>
+      <h2 class="h2 fade-up d1" style="margin:16px 0 18px;">
+        Built with <span class="serif" style="font-style:italic; color:var(--amber-deep);">emotional responsibility.</span>
+      </h2>
+      <p class="lede fade-up d2" style="margin:0 auto;">
+        Created in collaboration with grief researchers and veterinarians.
+        Designed for remembrance &mdash; never replacement.
+      </p>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar fade-up">
+        <div class="pillar-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V7a3 3 0 0 1 6 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>
+        </div>
+        <h4>You control all memories</h4>
+        <p>Add, edit, archive, or delete anything &mdash; instantly and permanently.</p>
+      </div>
+      <div class="pillar fade-up d1">
+        <div class="pillar-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h4>Private by default</h4>
+        <p>End-to-end encrypted. Your companion is never used to train other models.</p>
+      </div>
+      <div class="pillar fade-up d2">
+        <div class="pillar-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <h4>Designed with grief experts</h4>
+        <p>Shaped by clinicians who understand the long arc of loss and remembrance.</p>
+      </div>
+      <div class="pillar fade-up d3">
+        <div class="pillar-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h4>Remembrance, not replacement</h4>
+        <p>EchoPet is a memory companion, never a stand-in for the bond you had.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. WAITLIST ============ -->
+<section class="waitlist" id="waitlist">
+  <div class="particles" id="particles-waitlist"></div>
+  <div class="wrap-narrow">
+    <div class="waitlist-head">
+      <div class="eyebrow fade-up"><span class="dot"></span>Private early access</div>
+      <h2 class="h2 fade-up d1" style="margin:16px 0;">
+        Be among the first to <span class="serif" style="font-style:italic; color:var(--amber-deep);">experience EchoPet.</span>
+      </h2>
+      <p class="lede fade-up d2">
+        Join the private early access list. We'll reach out personally when
+        your invitation is ready.
+      </p>
+    </div>
+
+    <form class="form fade-up" id="waitlist-form" onsubmit="event.preventDefault(); document.getElementById('form-success').style.display='flex'; this.style.display='none';">
+      <div class="form-row">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required />
+        </div>
+        <div class="field">
+          <label for="pet">Pet type</label>
+          <select id="pet" name="pet">
+            <option>Dog</option>
+            <option>Cat</option>
+            <option>Rabbit</option>
+            <option>Bird</option>
+            <option>Horse</option>
+            <option>Other companion</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="story">Tell us about your pet <span class="mute" style="font-size:11.5px;">(optional)</span></label>
+        <textarea id="story" name="story" placeholder="A name, a favorite memory, anything you'd like us to know."></textarea>
+      </div>
+      <div class="form-submit">
+        <button class="btn btn-amber" type="submit">
+          Reserve My Spot
+          <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <div style="display:flex; align-items:center; gap:10px; color:var(--mute); font-size:13px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Encrypted. No spam, ever.</span>
+        </div>
+      </div>
+      <p class="form-fine">Limited early access invitations &mdash; we onboard slowly and personally.</p>
+    </form>
+
+    <div id="form-success" class="form" style="display:none; flex-direction:column; align-items:center; text-align:center; gap:14px; margin-top:24px;">
+      <div style="width:54px; height:54px; border-radius:50%; background:linear-gradient(160deg,#FCEEDA,#C89868); display:flex; align-items:center; justify-content:center; color:#fff;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3 class="serif" style="font-size:28px; margin:0;">You're on the list.</h3>
+      <p style="margin:0; color:var(--ink-2); max-width:36ch;">We'll reach out personally when your invitation is ready. Thank you for trusting us with this.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. FINAL EMOTIONAL ============ -->
+<section class="final">
+  <div class="wrap">
+    <div class="final-card fade-up">
+      <img src="assets/final.png" alt="A softly glowing AI cat sleeping beside someone reading in bed at night" />
+      <div class="final-overlay"></div>
+      <div class="final-text">
+        <h2 class="h2">
+          Some connections deserve to be<br/>
+          <span class="it">remembered differently.</span>
+        </h2>
+        <a class="btn btn-amber" href="#waitlist">
+          Join the Waitlist
+          <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="#top">
+          <span class="logo-mark"></span>
+          <span>EchoPet</span>
+        </a>
+        <p>EchoPet is an AI memory companion designed for remembrance and emotional connection.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="#ethics">Ethics</a></li>
+            <li><a href="#stories">Stories</a></li>
+            <li><a href="#waitlist">Waitlist</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Trust</h5>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 EchoPet, Inc. &middot; Made with care.</span>
+      <span>Designed for remembrance, not replacement.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ Sticky mobile CTA ============ -->
+<div class="mobile-cta" id="mobile-cta">
+  <span class="label">Reserve early access</span>
+  <a href="#waitlist" class="btn">Join waitlist</a>
+</div>
+
+<script>
+  // Sticky nav border
+  const nav = document.getElementById('nav');
+  const onScroll = () => {
+    nav.classList.toggle('scrolled', window.scrollY > 12);
+    const mc = document.getElementById('mobile-cta');
+    mc.classList.toggle('show', window.scrollY > window.innerHeight * 0.6);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Fade-up on view
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  // Safety fallback: if IO hasn't fired for any reason, reveal everything.
+  // Also sweep on load for elements already in viewport.
+  function revealInView(){
+    const vh = window.innerHeight;
+    document.querySelectorAll('.fade-up:not(.in)').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh && r.bottom > 0) el.classList.add('in');
+    });
+  }
+  window.addEventListener('load', revealInView);
+  revealInView();
+  setTimeout(() => {
+    document.querySelectorAll('.fade-up:not(.in)').forEach(el => el.classList.add('in'));
+  }, 1200);
+
+  // Particles
+  function makeParticles(containerId, count){
+    const c = document.getElementById(containerId);
+    if (!c) return;
+    for (let i = 0; i < count; i++){
+      const p = document.createElement('span');
+      p.className = 'particle';
+      const size = 2 + Math.random() * 3;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.top = (Math.random() * 100) + '%';
+      p.style.animationDuration = (8 + Math.random() * 12) + 's';
+      p.style.animationDelay = (-Math.random() * 14) + 's';
+      p.style.opacity = (0.3 + Math.random() * 0.4).toFixed(2);
+      c.appendChild(p);
+    }
+  }
+  makeParticles('particles-solution', 30);
+  makeParticles('particles-waitlist', 50);
+
+  // Gentle parallax on hero visual
+  const heroVisual = document.querySelector('.hero-visual-wrap');
+  if (heroVisual && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    window.addEventListener('scroll', () => {
+      const y = Math.min(window.scrollY, 600);
+      heroVisual.style.transform = `translateY(${y * -0.04}px)`;
+    }, { passive: true });
+  }
+</script>
+
+</body>
+</html>
